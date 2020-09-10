@@ -19,13 +19,14 @@ io.on('connection', socket => {
 
     // When the client sends the server a 'NewEquation' message, the equation is added and the new list is sent to all clients.
     socket.on('NewEquation', ({ equation }) => {
-        // Remove the front element is there is 10 or more items, before new item is appended.
+        // Remove the last element if there is 10 or more items, before new item is appended to front.
         if(lastTen.length >= 10) lastTen = lastTen.slice(1);
         lastTen.unshift({
             ...equation,
             time: Date.now()
         }); // Append new item.
-
+        
+        // Send the new list to all connected clients.
         io.sockets.emit("NewList", lastTen);
     })
     socket.on('disconnect', socket => {
